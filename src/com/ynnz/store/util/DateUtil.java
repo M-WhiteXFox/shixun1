@@ -11,7 +11,7 @@ public class DateUtil {
 
 	private static String dateTimeFmt = "yyyy-MM-dd HH:mm:ss";
 
-	private static String dateTimeFmt1 = "yyyy年MM月dd HH:mm:ss";
+	private static String dateTimeFmt1 = "yyyy年MM月dd日HH:mm:ss";
 
 	private static String dateFmt1 = "yyyy-MM-dd";
 
