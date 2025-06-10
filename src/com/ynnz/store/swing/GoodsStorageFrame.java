@@ -20,10 +20,16 @@ import javax.swing.JTextField;
 
 import com.ynnz.store.dao.IGoodsDao;
 import com.ynnz.store.dao.IGoodsTypeDao;
+import com.ynnz.store.dao.IStorageRecordDao;
 import com.ynnz.store.dao.impl.GoodsDaoImpl;
 import com.ynnz.store.dao.impl.GoodsTypeDaoImpl;
+import com.ynnz.store.dao.impl.StorageRecordDaoImpl;
 import com.ynnz.store.pojo.Goods;
 import com.ynnz.store.pojo.GoodsType;
+import com.ynnz.store.pojo.StorageRecord;
+import com.ynnz.store.util.DataMapUtil;
+import com.ynnz.store.util.Constants;
+import com.ynnz.store.pojo.UserInfo;
 
 public class GoodsStorageFrame extends ParentFrame {
 
@@ -39,6 +45,7 @@ public class GoodsStorageFrame extends ParentFrame {
 	private Goods editGoods;// 要编辑的货品
 	private IGoodsTypeDao goodsTypeDao = new GoodsTypeDaoImpl();
 	private IGoodsDao goodsDao = new GoodsDaoImpl();
+	private IStorageRecordDao storageRecordDao = new StorageRecordDaoImpl();
 
 	public GoodsStorageFrame() {
 		super("商品入库");
@@ -242,6 +249,12 @@ public class GoodsStorageFrame extends ParentFrame {
 					JOptionPane.showMessageDialog(null, "货品条码重复，请重新输入或直接调出货品信息！");
 					return;
 				}
+
+				// 设置商品ID
+				if (editGoods != null) {
+					goods.setGoodsId(editGoods.getGoodsId());
+				}
+
 				String name = goodsNameTxt.getText();
 				if (name == null || name.trim().length() == 0) {
 					JOptionPane.showMessageDialog(null, "请输入货品名称！");
@@ -318,13 +331,35 @@ public class GoodsStorageFrame extends ParentFrame {
 					msg = "新增";
 				}
 				if (ret) {
-					JOptionPane.showMessageDialog(null, msg + "入库数量成功！");
-					kcTip.setText("当前库存数量：" + goods.getStockNum());
-					// 更新入库时间
-					if (editGoods != null) {
-						goodsDao.updateStockDate(editGoods.getGoodsId(), new Date());
+					// 生成入库单
+					StorageRecord record = new StorageRecord();
+					record.setRecordCode(generateRecordCode());
+					record.setGoodsId(goods.getGoodsId());
+					record.setGoodsName(goods.getGoodsName());
+					record.setQuantity(Integer.parseInt(stoNum));
+					record.setStorePrice(goods.getStorePrice());
+					record.setTotalAmount(goods.getStorePrice() * Integer.parseInt(stoNum));
+					record.setStorageDate(new Date());
+
+					// 获取当前登录用户信息
+					UserInfo user = DataMapUtil.LOGIN_INFO.get(Constants.LOGIN_USER);
+					record.setOperatorId(user.getSaleManId());
+					record.setOperatorName(user.getSaleManName());
+
+					// 保存入库单
+					boolean recordSaved = storageRecordDao.addStorageRecord(record);
+
+					if (recordSaved) {
+						JOptionPane.showMessageDialog(null, msg + "入库数量成功！\n入库单号：" + record.getRecordCode());
+						kcTip.setText("当前库存数量：" + goods.getStockNum());
+						// 更新入库时间
+						if (editGoods != null) {
+							goodsDao.updateStockDate(editGoods.getGoodsId(), new Date());
+						}
+						clearForm(); // 清空表单
+					} else {
+						JOptionPane.showMessageDialog(null, msg + "货品入库失败！");
 					}
-					clearForm(); // 清空表单
 				} else {
 					JOptionPane.showMessageDialog(null, msg + "货品入库失败！");
 				}
@@ -357,6 +392,18 @@ public class GoodsStorageFrame extends ParentFrame {
 		secondTypeTxt.removeAllItems();
 		GoodsType second = new GoodsType("--请选择--");
 		secondTypeTxt.addItem(second);
+	}
+
+	/**
+	 * 生成入库单号
+	 * 
+	 * @return 入库单号
+	 */
+	private String generateRecordCode() {
+		// 生成格式：RK + 年月日 + 6位随机数
+		String date = new java.text.SimpleDateFormat("yyyyMMdd").format(new Date());
+		String random = String.format("%06d", (int) (Math.random() * 1000000));
+		return "RK" + date + random;
 	}
 
 }
