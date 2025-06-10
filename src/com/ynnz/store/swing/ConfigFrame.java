@@ -34,7 +34,6 @@ public class ConfigFrame extends ParentFrame {
 		configInfoFrame();
 		btnEvent();
 		this.setResizable(false);
-		this.setVisible(true);// 必须放在页面所有部分布局完，不然页面有些组件显示不全
 	}
 
 	/**
@@ -63,21 +62,21 @@ public class ConfigFrame extends ParentFrame {
 
 		JLabel shopLbl = new JLabel("门店名称：");
 		shopLbl.setBounds(60, 20, 70, 20);
-		shopNameTxt = new JTextField(store.getTypeValue()==null?"":store.getTypeValue());
+		shopNameTxt = new JTextField(store.getTypeValue() == null ? "" : store.getTypeValue());
 		shopNameTxt.setBounds(130, 20, 100, 20);
 		configInfoPanel.add(shopLbl);
 		configInfoPanel.add(shopNameTxt);
 
 		JLabel imgLbl = new JLabel("首页广告图片路径：");
 		imgLbl.setBounds(10, 50, 120, 20);
-		imgTxt = new JTextField(imgPath.getTypeValue()==null?"":imgPath.getTypeValue());
+		imgTxt = new JTextField(imgPath.getTypeValue() == null ? "" : imgPath.getTypeValue());
 		imgTxt.setBounds(130, 50, 170, 20);
 		configInfoPanel.add(imgLbl);
 		configInfoPanel.add(imgTxt);
 
 		JLabel xseLbl = new JLabel("月度考核保底销售额：");
 		xseLbl.setBounds(0, 80, 130, 20);
-		xseTxt = new JTextField(kpi.getTypeValue()==null?"":kpi.getTypeValue());
+		xseTxt = new JTextField(kpi.getTypeValue() == null ? "" : kpi.getTypeValue());
 		xseTxt.setBounds(130, 80, 100, 20);
 		configInfoPanel.add(xseLbl);
 		configInfoPanel.add(xseTxt);
@@ -102,7 +101,7 @@ public class ConfigFrame extends ParentFrame {
 			}
 		});
 
-		//确定按钮绑定事件
+		// 确定按钮绑定事件
 		sureBtn.addActionListener(new ActionListener() {
 
 			@Override

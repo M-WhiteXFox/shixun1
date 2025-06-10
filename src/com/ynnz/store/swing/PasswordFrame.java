@@ -30,7 +30,6 @@ public class PasswordFrame extends ParentFrame {
 		pwdFrame();
 		btnEvent();
 		this.setResizable(false);
-		this.setVisible(true);// 必须放在页面所有部分布局完，不然页面有些组件显示不全
 	}
 
 	/**
@@ -91,7 +90,7 @@ public class PasswordFrame extends ParentFrame {
 			}
 		});
 
-		//确定按钮绑定事件
+		// 确定按钮绑定事件
 		sureBtn.addActionListener(new ActionListener() {
 
 			@Override
@@ -110,7 +109,7 @@ public class PasswordFrame extends ParentFrame {
 					return;
 				}
 
-				if (newPwd == null || newPwd.trim().length() <6 || newPwd.trim().length() >10) {
+				if (newPwd == null || newPwd.trim().length() < 6 || newPwd.trim().length() > 10) {
 					JOptionPane.showMessageDialog(null, "请填写6~10位的新密码！");
 					return;
 				} else if (surePwd == null || surePwd.trim().length() == 0) {

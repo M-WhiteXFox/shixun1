@@ -52,7 +52,6 @@ public class GoodsReturnFrame extends ParentFrame {
 		queryPanel();
 		tableListPane();
 		btnEvent();
-		this.setVisible(true);
 	}
 
 	public void init() {

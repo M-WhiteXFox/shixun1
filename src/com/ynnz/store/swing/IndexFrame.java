@@ -1,24 +1,29 @@
 package com.ynnz.store.swing;
 
+import com.ynnz.store.dao.IDictionaryDao;
+import com.ynnz.store.dao.impl.DictionaryDaoImpl;
+import com.ynnz.store.pojo.Dictionary;
+import com.ynnz.store.pojo.UserInfo;
+import com.ynnz.store.util.Constants;
+import com.ynnz.store.util.DataMapUtil;
+import com.ynnz.store.util.DateUtil;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.net.URL;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -29,17 +34,8 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-
-import com.ynnz.store.dao.IDictionaryDao;
-import com.ynnz.store.dao.impl.DictionaryDaoImpl;
-import com.ynnz.store.pojo.Dictionary;
-import com.ynnz.store.pojo.UserInfo;
-import com.ynnz.store.util.Constants;
-import com.ynnz.store.util.DataMapUtil;
-import com.ynnz.store.util.DateUtil;
+import javax.swing.JScrollPane;
+import java.awt.Component;
 
 public class IndexFrame extends ParentFrame {
 
@@ -64,7 +60,7 @@ public class IndexFrame extends ParentFrame {
 	public IndexFrame() {
 		super("首页");
 		this.setLayout(new BorderLayout());
-		this.setBounds(200, 70, 900, 530);
+		this.setBounds(200, 70, 1000, 600);
 
 		// 设置窗口背景色
 		this.getContentPane().setBackground(BACKGROUND_COLOR);
@@ -97,6 +93,20 @@ public class IndexFrame extends ParentFrame {
 		// 调整所有标签页内容大小
 		for (JPanel panel : tabPanels.values()) {
 			panel.setSize(width, height - 40);
+			// 调整面板内所有组件的大小
+			Component[] components = panel.getComponents();
+			for (Component comp : components) {
+				if (comp instanceof JScrollPane) {
+					JScrollPane scrollPane = (JScrollPane) comp;
+					scrollPane.setSize(width - 20, height - 100);
+					scrollPane.setLocation(10, 40);
+				} else if (comp instanceof JPanel) {
+					JPanel subPanel = (JPanel) comp;
+					if (subPanel.getLayout() == null) { // 如果是绝对布局
+						subPanel.setSize(width, height - 40);
+					}
+				}
+			}
 			panel.revalidate();
 			panel.repaint();
 		}
@@ -213,31 +223,10 @@ public class IndexFrame extends ParentFrame {
 		labl.setHorizontalAlignment(JLabel.CENTER);
 		labl.setVerticalAlignment(JLabel.CENTER);
 		homePanel.add(labl, BorderLayout.CENTER);
-
 		mainTabbedPane.addTab("首页", homePanel);
 		tabPanels.put("首页", homePanel);
 
 		this.add(mainTabbedPane, BorderLayout.CENTER);
-	}
-
-	// 添加新标签页的方法
-	private void addNewTab(String title, Container container) {
-		// 检查是否已存在相同标题的标签页
-		for (int i = 0; i < mainTabbedPane.getTabCount(); i++) {
-			if (mainTabbedPane.getTitleAt(i).equals(title)) {
-				mainTabbedPane.setSelectedIndex(i);
-				return;
-			}
-		}
-
-		// 将Container转换为JPanel
-		JPanel panel = new JPanel(new BorderLayout());
-		panel.add(container, BorderLayout.CENTER);
-
-		// 添加新标签页
-		mainTabbedPane.addTab(title, panel);
-		tabPanels.put(title, panel);
-		mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount() - 1);
 	}
 
 	private void menuEvent() {
@@ -311,13 +300,13 @@ public class IndexFrame extends ParentFrame {
 			}
 		});
 
-		// "商品分类"菜单绑定事件
+		// "商品分类管理"菜单绑定事件
 		itemFl.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				GoodsTypeFrame frm = new GoodsTypeFrame();
 				frm.setVisible(false);
-				addNewTab("商品分类", frm.getContentPane());
+				addNewTab("商品分类管理", frm.getContentPane());
 			}
 		});
 
@@ -345,10 +334,69 @@ public class IndexFrame extends ParentFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				indexFrm.dispose();
-				DataMapUtil.LOGIN_INFO.put(Constants.LOGIN_USER, null);
-				LoginFrame login = new LoginFrame();
+				LoginFrame loginFrm = new LoginFrame();
 			}
 		});
+	}
+
+	private void addNewTab(String title, Container content) {
+		// 创建带有关闭按钮的标签页标题面板
+		JPanel tabTitlePanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+		tabTitlePanel.setOpaque(false);
+
+		JLabel titleLabel = new JLabel(title);
+		titleLabel.setFont(MENU_FONT);
+
+		JButton closeButton = new JButton("×");
+		closeButton.setFont(new Font("Arial", Font.BOLD, 14));
+		closeButton.setForeground(Color.GRAY);
+		closeButton.setBorderPainted(false);
+		closeButton.setContentAreaFilled(false);
+		closeButton.setFocusPainted(false);
+		closeButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+		// 添加鼠标悬停效果
+		closeButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				closeButton.setForeground(Color.RED);
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				closeButton.setForeground(Color.GRAY);
+			}
+		});
+
+		// 添加关闭按钮点击事件
+		closeButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int index = mainTabbedPane.indexOfTabComponent(tabTitlePanel);
+				if (index != -1) {
+					mainTabbedPane.removeTabAt(index);
+					tabPanels.remove(title);
+				}
+			}
+		});
+
+		tabTitlePanel.add(titleLabel);
+		tabTitlePanel.add(closeButton);
+
+		// 创建内容面板
+		JPanel contentPanel = new JPanel(new BorderLayout());
+		contentPanel.add(content, BorderLayout.CENTER);
+		contentPanel.setBackground(BACKGROUND_COLOR);
+
+		// 添加标签页
+		mainTabbedPane.addTab(title, contentPanel);
+		mainTabbedPane.setTabComponentAt(mainTabbedPane.getTabCount() - 1, tabTitlePanel);
+
+		// 存储标签页面板引用
+		tabPanels.put(title, contentPanel);
+
+		// 切换到新标签页
+		mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount() - 1);
 	}
 
 	/**

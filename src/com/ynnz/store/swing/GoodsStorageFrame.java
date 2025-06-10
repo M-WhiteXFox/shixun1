@@ -47,7 +47,6 @@ public class GoodsStorageFrame extends ParentFrame {
 		init();
 		btnEvent();
 		this.setResizable(false);
-		this.setVisible(true);
 	}
 
 	private void init() {
@@ -239,7 +238,7 @@ public class GoodsStorageFrame extends ParentFrame {
 					goods.setBarCode(code);
 				}
 				Goods go = goodsDao.getGoodsByBarCode(code.trim());
-				if (go != null && editGoods == null) {// 不是点“读取信息”调出的货品信息
+				if (go != null && editGoods == null) {// 不是点"读取信息"调出的货品信息
 					JOptionPane.showMessageDialog(null, "货品条码重复，请重新输入或直接调出货品信息！");
 					return;
 				}

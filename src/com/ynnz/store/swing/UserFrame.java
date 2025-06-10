@@ -56,7 +56,6 @@ public class UserFrame extends ParentFrame {
 		delUserEvent();// 绑定删除事件
 		clearSelect();
 		this.setResizable(false);
-		this.setVisible(true);// 必须放在页面所有部分布局完，不然页面有些组件显示不全
 	}
 
 	/**
@@ -65,7 +64,7 @@ public class UserFrame extends ParentFrame {
 	 */
 	private void init() {
 		this.setLayout(null);
-		this.setBounds(300, 150, 650, 450);// 设置窗体坐标位置和宽高
+		this.setBounds(300, 150, 800, 500); // 增加窗口大小
 		delBtn = new JButton("删除员工");
 		delBtn.setBounds(60, 330, 90, 20);
 		this.add(delBtn);
@@ -94,7 +93,7 @@ public class UserFrame extends ParentFrame {
 		int v = ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED;
 		int h = ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED;
 		listPanel = new JScrollPane(table, v, h);
-		listPanel.setBounds(10, 0, 400, 300);
+		listPanel.setBounds(10, 0, 580, 300);
 		this.add(listPanel);
 		// new 新table时候，需要重新绑定事件，不然无法触发事件
 		table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
@@ -142,8 +141,8 @@ public class UserFrame extends ParentFrame {
 	 */
 	private void createUserForm() {
 		userPanel = new JPanel();
-		userPanel.setLayout(null);// 用定位的方式就不能有布局
-		userPanel.setBounds(410, 0, 220, 350);
+		userPanel.setLayout(null);
+		userPanel.setBounds(600, 0, 190, 350);
 		this.add(userPanel);
 		JLabel title = new JLabel("员工信息");
 		title.setFont(new Font(Font.DIALOG, Font.BOLD, 18));
@@ -185,7 +184,6 @@ public class UserFrame extends ParentFrame {
 		JLabel commionsionRate = new JLabel("提成比例：");
 		commionsionRate.setBounds(20, 160, 80, 20);
 		commionsionRateTxt = new JTextField();
-
 		commionsionRateTxt.setBounds(105, 160, 80, 20);
 		userPanel.add(commionsionRate);
 		userPanel.add(commionsionRateTxt);
@@ -219,7 +217,7 @@ public class UserFrame extends ParentFrame {
 	}
 
 	/**
-	 * “新增用户按钮”监听事件，新增/编辑用户信息
+	 * "新增用户按钮"监听事件，新增/编辑用户信息
 	 */
 	private void editUserEvent() {
 		addBtn.addActionListener(new ActionListener() {

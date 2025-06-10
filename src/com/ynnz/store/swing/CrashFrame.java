@@ -61,7 +61,6 @@ public class CrashFrame extends ParentFrame {
 		tableListPane();
 		accountPanel();
 		crashBtnEvent();
-		this.setVisible(true);
 	}
 
 	/**
@@ -69,7 +68,7 @@ public class CrashFrame extends ParentFrame {
 	 */
 	public void init() {
 		this.setLayout(null);
-		this.setBounds(300, 80, 800, 500);
+		this.setBounds(300, 150, 800, 500);
 		this.setResizable(false);
 	}
 
@@ -130,11 +129,11 @@ public class CrashFrame extends ParentFrame {
 		int v = ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED;
 		int h = ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED;
 
-		model = new DefaultTableModel(); // 新建bai一个默认数据模型du
-		table = new JTable(model); // 用数据模型创建JTable，JTable会自动监听到数zhi据模型中的数据改变并显示出来
+		model = new DefaultTableModel();
+		table = new JTable(model);
 
-		listPanel = new JScrollPane(table, v, h);// 用列表创建可滚动的Panel，把这个Panel添加到窗口中
-		listPanel.setBounds(10, 40, 760, 300);
+		listPanel = new JScrollPane(table, v, h);
+		listPanel.setBounds(10, 40, 780, 300);
 		Vector<String> colName = new Vector<String>();
 		colName.addAll(Arrays.asList(head));
 		model.setDataVector(null, colName);
@@ -148,11 +147,11 @@ public class CrashFrame extends ParentFrame {
 	private void accountPanel() {
 		JPanel accountPnl = new JPanel();
 		accountPnl.setLayout(null);
-		accountPnl.setBounds(0, 330, 700, 140);
+		accountPnl.setBounds(0, 350, 800, 140);
 		float allMoney = 0f;
 		allLbl = new JLabel("共：￥" + allMoney + "元");
 		allLbl.setBounds(10, 30, 100, 20);
-		int num = 0;// 商品种类数
+		int num = 0;
 		numLbl = new JLabel("商品数量：" + num);
 		numLbl.setBounds(10, 50, 100, 20);
 		UserInfo user = DataMapUtil.LOGIN_INFO.get(Constants.LOGIN_USER);
@@ -170,7 +169,6 @@ public class CrashFrame extends ParentFrame {
 		JLabel zlLbl = new JLabel("找零：");
 		zlLbl.setBounds(420, 80, 60, 20);
 		zlTxt = new JTextField();
-
 		zlTxt.setEnabled(false);
 		zlTxt.setBounds(460, 80, 120, 20);
 

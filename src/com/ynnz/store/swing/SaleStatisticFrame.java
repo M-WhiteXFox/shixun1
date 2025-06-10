@@ -54,13 +54,12 @@ public class SaleStatisticFrame extends ParentFrame {
 		queryPanel();
 		tableListPane();
 		accountPanel();
-		this.setVisible(true);
 		btnEvent();
 	}
 
 	public void init() {
 		this.setLayout(null);
-		this.setBounds(300, 80, 700, 500);
+		this.setBounds(300, 150, 800, 500);
 		this.setResizable(false);
 	}
 
@@ -127,13 +126,13 @@ public class SaleStatisticFrame extends ParentFrame {
 		JTable table;
 		int v = ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED;
 		int h = ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED;
-		model = new DefaultTableModel(); // 新建bai一个默认数据模型du
-		table = new JTable(model); // 用数据模型创建JTable，JTable会自动监听到数zhi据模型中的数据改变并显示出来
+		model = new DefaultTableModel();
+		table = new JTable(model);
 		Vector<String> colName = new Vector<String>();
 		colName.addAll(Arrays.asList(head));
 		model.setDataVector(null, colName);
 		JScrollPane listPanel = new JScrollPane(table, v, h);
-		listPanel.setBounds(10, 40, 660, 300);
+		listPanel.setBounds(10, 40, 780, 300);
 		this.add(listPanel);
 		numLbl = new JLabel();
 		numLbl.setBounds(10, 50, 100, 20);
@@ -148,7 +147,7 @@ public class SaleStatisticFrame extends ParentFrame {
 	private void accountPanel() {
 		JPanel statisticPanel = new JPanel();
 		statisticPanel.setLayout(null);
-		statisticPanel.setBounds(0, 330, 700, 140);
+		statisticPanel.setBounds(0, 350, 800, 140);
 		JLabel allLbl = new JLabel("统计结果");
 		allLbl.setBounds(70, 30, 100, 20);
 
@@ -200,7 +199,7 @@ public class SaleStatisticFrame extends ParentFrame {
 				String endDate = dateETxt.getText();
 				Object dgySelect = dgyTxt.getSelectedItem();
 				int dgyID = 0;
-				if (dgySelect != null && !((UserInfo)dgySelect).getSaleManName().contains("选择")) {
+				if (dgySelect != null && !((UserInfo) dgySelect).getSaleManName().contains("选择")) {
 					UserInfo user = (UserInfo) dgySelect;
 					dgyID = user.getSaleManId();
 				}
@@ -230,7 +229,7 @@ public class SaleStatisticFrame extends ParentFrame {
 	/**
 	 * 加载表格统计数据
 	 */
-	private void getTableList(int dgyID,String startDate,String endDate ) {
+	private void getTableList(int dgyID, String startDate, String endDate) {
 		List<Sales> saleList = salesDetailDao.getSalesStatistic(dgyID, startDate, endDate);
 		int num = saleList.size();
 		numLbl.setText("销售记录" + num + "条！");
@@ -242,8 +241,9 @@ public class SaleStatisticFrame extends ParentFrame {
 			saleMoney = saleMoney + g.getAmount();
 			profit = profit + g.getProfit();
 		}
-		saleMoney=RoundTool.roundFloat(saleMoney, 2, BigDecimal.ROUND_DOWN);
-		profit=RoundTool.roundFloat(profit, 2, BigDecimal.ROUND_DOWN);;
+		saleMoney = RoundTool.roundFloat(saleMoney, 2, BigDecimal.ROUND_DOWN);
+		profit = RoundTool.roundFloat(profit, 2, BigDecimal.ROUND_DOWN);
+		;
 		crasherLbl.setText("销售金额￥" + saleMoney + "元，利润￥" + profit + "元！");
 	}
 

@@ -52,12 +52,11 @@ public class GoodsViewFrame extends ParentFrame {
 		queryPanel();
 		tableListPane();
 		btnEvent();
-		this.setVisible(true);
 	}
 
 	public void init() {
 		this.setLayout(null);
-		this.setBounds(300, 80, 800, 450);
+		this.setBounds(300, 150, 800, 500);
 		this.setResizable(false);
 	}
 
@@ -149,13 +148,13 @@ public class GoodsViewFrame extends ParentFrame {
 		JTable table;
 		int v = ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED;
 		int h = ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED;
-		model = new DefaultTableModel(); // 新建bai一个默认数据模型du
-		table = new JTable(model); // 用数据模型创建JTable，JTable会自动监听到数zhi据模型中的数据改变并显示出来
+		model = new DefaultTableModel();
+		table = new JTable(model);
 		Vector<String> colName = new Vector<String>();
 		colName.addAll(Arrays.asList(head));
 		model.setDataVector(null, colName);
 		JScrollPane listPanel = new JScrollPane(table, v, h);
-		listPanel.setBounds(10, 75, 760, 320);
+		listPanel.setBounds(10, 75, 780, 320);
 		this.add(listPanel);
 		getTableListData(null, null, null, null, null);
 	}
@@ -274,7 +273,7 @@ public class GoodsViewFrame extends ParentFrame {
 	 * @param goodsType
 	 */
 	private void getTableListData(String barcode, String goodsName, String startDate, String endDate,
-								  GoodsType goodsType) {
+			GoodsType goodsType) {
 		List<Goods> goodsList = goodsDao.getGoodsListView(barcode, goodsName, startDate, endDate, goodsType);
 		int num = goodsList.size();
 		tipLbl.setText("当前共" + num + "条商品信息！");

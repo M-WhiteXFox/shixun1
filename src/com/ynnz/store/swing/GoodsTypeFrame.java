@@ -50,7 +50,6 @@ public class GoodsTypeFrame extends ParentFrame {
 		typeInfoFrame();// 创建编辑用户信息面板
 		btnEvent();// 绑定按钮事件
 		this.setResizable(false);
-		this.setVisible(true);// 必须放在页面所有部分布局完，不然页面有些组件显示不全
 	}
 
 	/**
@@ -59,7 +58,7 @@ public class GoodsTypeFrame extends ParentFrame {
 	 */
 	private void init() {
 		this.setLayout(null);
-		this.setBounds(300, 150, 650, 400);// 设置窗体坐标位置和宽高
+		this.setBounds(300, 150, 800, 500); // 增加窗口大小
 		this.setResizable(false);
 	}
 
@@ -130,10 +129,10 @@ public class GoodsTypeFrame extends ParentFrame {
 	 */
 	private void typeInfoFrame() {
 		JTabbedPane tabPanel = new JTabbedPane(JTabbedPane.NORTH);
-		tabPanel.setBounds(420, 0, 200, 350);
+		tabPanel.setBounds(600, 0, 190, 350);
 		typeInfoPanel = new JPanel();
-		typeInfoPanel.setLayout(null);// 用定位的方式就不能有布局
-		typeInfoPanel.setBounds(0, 0, 200, 350);
+		typeInfoPanel.setLayout(null);
+		typeInfoPanel.setBounds(0, 0, 190, 350);
 		this.add(typeInfoPanel);
 
 		JLabel typeNameLbl = new JLabel("分类名称：");
