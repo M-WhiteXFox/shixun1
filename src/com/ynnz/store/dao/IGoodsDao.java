@@ -1,9 +1,9 @@
 package com.ynnz.store.dao;
 
-import java.util.List;
-
 import com.ynnz.store.pojo.Goods;
 import com.ynnz.store.pojo.GoodsType;
+import java.util.Date;
+import java.util.List;
 
 public interface IGoodsDao {
 
@@ -42,6 +42,7 @@ public interface IGoodsDao {
 
 	/**
 	 * 商品返回库存
+	 * 
 	 * @param goodsId
 	 * @param num
 	 * @return
@@ -50,6 +51,7 @@ public interface IGoodsDao {
 
 	/**
 	 * 浏览商品信息
+	 * 
 	 * @param barcode
 	 * @param goodsName
 	 * @param startDate
@@ -58,7 +60,7 @@ public interface IGoodsDao {
 	 * @return
 	 */
 	public List<Goods> getGoodsListView(String barcode, String goodsName, String startDate, String endDate,
-										GoodsType goodsType);
+			GoodsType goodsType);
 
 	/**
 	 * 查某分类下商品数目
@@ -67,5 +69,14 @@ public interface IGoodsDao {
 	 * @return
 	 */
 	public int getGoodsCountByType(int typeId);
+
+	/**
+	 * 更新商品入库时间
+	 * 
+	 * @param goodsId   商品ID
+	 * @param stockDate 入库时间
+	 * @return 是否更新成功
+	 */
+	public boolean updateStockDate(int goodsId, Date stockDate);
 
 }

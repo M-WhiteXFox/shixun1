@@ -221,4 +221,14 @@ public class GoodsDaoImpl implements IGoodsDao {
 		return num;
 	}
 
+	@Override
+	public boolean updateStockDate(int goodsId, Date stockDate) {
+		String sql = "UPDATE t_goods SET StockDate = ? WHERE GoodsID = ?";
+		List<Object> values = new ArrayList<Object>();
+		values.add(stockDate);
+		values.add(goodsId);
+		int num = ExecuteCommon.updateDatas(sql, values);
+		return num > 0;
+	}
+
 }

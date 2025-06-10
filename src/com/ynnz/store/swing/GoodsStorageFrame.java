@@ -320,6 +320,11 @@ public class GoodsStorageFrame extends ParentFrame {
 				if (ret) {
 					JOptionPane.showMessageDialog(null, msg + "入库数量成功！");
 					kcTip.setText("当前库存数量：" + goods.getStockNum());
+					// 更新入库时间
+					if (editGoods != null) {
+						goodsDao.updateStockDate(editGoods.getGoodsId(), new Date());
+					}
+					clearForm(); // 清空表单
 				} else {
 					JOptionPane.showMessageDialog(null, msg + "货品入库失败！");
 				}
@@ -334,6 +339,24 @@ public class GoodsStorageFrame extends ParentFrame {
 				storageFrame.dispose();
 			}
 		});
+	}
+
+	/**
+	 * 清空表单
+	 */
+	private void clearForm() {
+		codeTxt.setText("");
+		goodsNameTxt.setText("");
+		buyTxt.setText("");
+		saleTxt.setText("");
+		discountTxt.setText("");
+		stoNumTxt.setText("");
+		kcTip.setVisible(false);
+		editGoods = null;
+		firstTypeTxt.setSelectedIndex(0);
+		secondTypeTxt.removeAllItems();
+		GoodsType second = new GoodsType("--请选择--");
+		secondTypeTxt.addItem(second);
 	}
 
 }
