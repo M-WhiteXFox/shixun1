@@ -19,6 +19,8 @@ public class DateUtil {
 
 	private static String dateFmt3 = "yyyy-MM";
 
+	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
 	/**
 	 * 取当前日期时间戳
 	 *
@@ -89,9 +91,10 @@ public class DateUtil {
 	 * @return
 	 */
 	public static String getChinaDateTime(Date date) {
-		SimpleDateFormat sdf = new SimpleDateFormat(dateTimeFmt1);
-		String ts = sdf.format(date);
-		return ts;
+		if (date == null) {
+			return "";
+		}
+		return sdf.format(date);
 	}
 
 	/**

@@ -68,7 +68,15 @@ public class StorageRecordDaoImpl implements IStorageRecordDao {
                     record.setTotalAmount(((Number) entry.getValue()).floatValue());
                 }
                 if ("StorageDate".equals(entry.getKey())) {
-                    record.setStorageDate((Date) entry.getValue());
+                    Object val = entry.getValue();
+                    if (val instanceof Date) {
+                        record.setStorageDate((Date) val);
+                    } else if (val instanceof java.time.LocalDateTime) {
+                        java.time.LocalDateTime ldt = (java.time.LocalDateTime) val;
+                        record.setStorageDate(java.sql.Timestamp.valueOf(ldt));
+                    } else {
+                        record.setStorageDate(null);
+                    }
                 }
                 if ("OperatorID".equals(entry.getKey())) {
                     record.setOperatorId((int) entry.getValue());
@@ -133,7 +141,15 @@ public class StorageRecordDaoImpl implements IStorageRecordDao {
                         record.setTotalAmount(((Number) entry.getValue()).floatValue());
                     }
                     if ("StorageDate".equals(entry.getKey())) {
-                        record.setStorageDate((Date) entry.getValue());
+                        Object val = entry.getValue();
+                        if (val instanceof Date) {
+                            record.setStorageDate((Date) val);
+                        } else if (val instanceof java.time.LocalDateTime) {
+                            java.time.LocalDateTime ldt = (java.time.LocalDateTime) val;
+                            record.setStorageDate(java.sql.Timestamp.valueOf(ldt));
+                        } else {
+                            record.setStorageDate(null);
+                        }
                     }
                     if ("OperatorID".equals(entry.getKey())) {
                         record.setOperatorId((int) entry.getValue());
@@ -146,5 +162,28 @@ public class StorageRecordDaoImpl implements IStorageRecordDao {
             }
         }
         return records;
+    }
+
+    @Override
+    public boolean updateStorageRecord(StorageRecord record) {
+        String sql = "UPDATE t_storage_record SET Quantity = ?, StorePrice = ?, TotalAmount = ? WHERE RecordCode = ?";
+        List<Object> values = new ArrayList<Object>();
+        values.add(record.getQuantity());
+        values.add(record.getStorePrice());
+        values.add(record.getTotalAmount());
+        values.add(record.getRecordCode());
+
+        int num = ExecuteCommon.updateDatas(sql, values);
+        return num > 0;
+    }
+
+    @Override
+    public boolean deleteStorageRecord(String recordCode) {
+        String sql = "DELETE FROM t_storage_record WHERE RecordCode = ?";
+        List<Object> values = new ArrayList<Object>();
+        values.add(recordCode);
+
+        int num = ExecuteCommon.updateDatas(sql, values);
+        return num > 0;
     }
 }

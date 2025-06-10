@@ -1,7 +1,7 @@
 package com.ynnz.store.dao;
 
-import java.util.List;
 import com.ynnz.store.pojo.StorageRecord;
+import java.util.List;
 
 public interface IStorageRecordDao {
     /**
@@ -29,4 +29,20 @@ public interface IStorageRecordDao {
      * @return 入库单列表
      */
     public List<StorageRecord> getStorageRecordList(String startDate, String endDate, String goodsName);
+
+    /**
+     * 更新入库单记录
+     * 
+     * @param record 入库单信息
+     * @return 是否更新成功
+     */
+    public boolean updateStorageRecord(StorageRecord record);
+
+    /**
+     * 删除入库单记录
+     * 
+     * @param recordCode 入库单号
+     * @return 是否删除成功
+     */
+    public boolean deleteStorageRecord(String recordCode);
 }

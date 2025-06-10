@@ -41,7 +41,7 @@ public class IndexFrame extends ParentFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JMenu menuJxc, menuTj, menuWh, menuGl;
-	private JMenuItem itemSyt, itemRk, itemLl, itemTh, itemXs, itemGz, itemFl, itemYg, itemPz, itemPwd;
+	private JMenuItem itemSyt, itemRk, itemRkRecord, itemLl, itemTh, itemXs, itemGz, itemFl, itemYg, itemPz, itemPwd;
 	private IDictionaryDao dictionaryDao = new DictionaryDaoImpl();
 	private JButton logOut;
 	private IndexFrame indexFrm = this;
@@ -116,6 +116,7 @@ public class IndexFrame extends ParentFrame {
 		menuJxc = createMenu("进销存管理");
 		itemSyt = createMenuItem("收银台");
 		itemRk = createMenuItem("商品入库");
+		itemRkRecord = createMenuItem("入库记录");
 		itemLl = createMenuItem("商品浏览");
 		itemTh = createMenuItem("退货管理");
 
@@ -330,6 +331,16 @@ public class IndexFrame extends ParentFrame {
 			}
 		});
 
+		// "入库记录"菜单绑定事件
+		itemRkRecord.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				GoodsStorageRecordFrame frm = new GoodsStorageRecordFrame();
+				frm.setVisible(false);
+				addNewTab("入库记录", frm.getContentPane());
+			}
+		});
+
 		logOut.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -409,6 +420,7 @@ public class IndexFrame extends ParentFrame {
 		if ("导购员".equals(role)) {
 			menuJxc.add(itemSyt);
 			menuJxc.add(itemRk);
+			menuJxc.add(itemRkRecord);
 			menuJxc.add(itemLl);
 			menuBar.add(menuJxc);
 			menuWh.add(itemFl);
@@ -418,6 +430,7 @@ public class IndexFrame extends ParentFrame {
 		} else if ("店长".equals(role)) {
 			menuJxc.add(itemSyt);
 			menuJxc.add(itemRk);
+			menuJxc.add(itemRkRecord);
 			menuJxc.add(itemLl);
 			menuJxc.add(itemTh);
 			menuBar.add(menuJxc);
