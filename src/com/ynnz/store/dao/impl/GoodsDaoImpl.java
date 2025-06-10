@@ -184,7 +184,15 @@ public class GoodsDaoImpl implements IGoodsDao {
 						goods.setStockNum((int) entry.getValue());
 					}
 					if ("StockDate".equals(entry.getKey())) {
-						goods.setStockDate((Date) entry.getValue());
+						Object val = entry.getValue();
+						if (val instanceof Date) {
+							goods.setStockDate((Date) val);
+						} else if (val instanceof java.time.LocalDateTime) {
+							java.time.LocalDateTime ldt = (java.time.LocalDateTime) val;
+							goods.setStockDate(java.sql.Timestamp.valueOf(ldt));
+						} else {
+							goods.setStockDate(null);
+						}
 					}
 				}
 				goods.setGoodsType(stype);

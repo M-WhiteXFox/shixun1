@@ -61,10 +61,13 @@ public class SalesDetailDaoImpl implements ISalesDetailDao {
 				+ "U.SalesmanID,U.SalesmanName,S.SalesDate,S.Amount FROM t_salesdetail SD \r\n"
 				+ "INNER JOIN t_goods G ON SD.GoodsID=G.GoodsID\r\n"
 				+ "INNER JOIN t_sales S ON SD.SalesID=S.SalesID\r\n"
-				+ "LEFT JOIN t_userinfo U ON S.SalesmanID=U.SalesmanID\r\n" + "WHERE S.ReceiptsCode = ? \r\n"
-				+ "ORDER BY S.SalesDate DESC ";
+				+ "LEFT JOIN t_userinfo U ON S.SalesmanID=U.SalesmanID\r\n";
 		List<Object> values = new ArrayList<Object>();
-		values.add(receiptCode);
+		if (StringUtils.isNotEmpty(receiptCode)) {
+			sql += "WHERE S.ReceiptsCode = ? \r\n";
+			values.add(receiptCode);
+		}
+		sql += "ORDER BY S.SalesDate DESC ";
 		SalesDetail saleDetail;
 		List<Map<String, Object>> ret = ExecuteCommon.queryDatas(sql, values);
 		List<SalesDetail> list = new ArrayList<SalesDetail>();

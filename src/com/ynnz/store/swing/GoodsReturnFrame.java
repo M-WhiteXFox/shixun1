@@ -161,10 +161,8 @@ public class GoodsReturnFrame extends ParentFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				String rcode = numberTxt.getText();
-				if (!StringUtils.isNotEmpty(rcode)) {
-					JOptionPane.showMessageDialog(null, "请输入小票流水号！");
-					return;
-				}
+				rcode = rcode.trim();
+				model.setRowCount(0); // 清空表格
 				List<SalesDetail> sds = salesDetailDao.getSaleGoodsByCode(rcode);
 				float saleAmount = 0f;
 				for (SalesDetail g : sds) {

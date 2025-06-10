@@ -1,11 +1,25 @@
 package com.ynnz.store.swing;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Container;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.net.URL;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -14,6 +28,10 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import com.ynnz.store.dao.IDictionaryDao;
 import com.ynnz.store.dao.impl.DictionaryDaoImpl;
@@ -27,75 +45,310 @@ public class IndexFrame extends ParentFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JMenu menuJxc, menuTj, menuWh, menuGl;
-	private JMenuItem itemSyt, itemRk, itemLl, itemTh, itemXs, itemGz, itemFl, itemYg, itemPz,itemPwd;
+	private JMenuItem itemSyt, itemRk, itemLl, itemTh, itemXs, itemGz, itemFl, itemYg, itemPz, itemPwd;
 	private IDictionaryDao dictionaryDao = new DictionaryDaoImpl();
 	private JButton logOut;
 	private IndexFrame indexFrm = this;
+	private JTabbedPane mainTabbedPane;
+	private Map<String, JPanel> tabPanels = new HashMap<>();
+
+	// 定义颜色常量
+	private static final Color PRIMARY_COLOR = new Color(33, 150, 243);
+	private static final Color BACKGROUND_COLOR = new Color(245, 245, 245);
+	private static final Color MENU_BACKGROUND = new Color(255, 255, 255);
+	private static final Color MENU_SELECTED = new Color(232, 240, 254);
+	private static final Font MAIN_FONT = new Font("微软雅黑", Font.PLAIN, 14);
+	private static final Font MENU_FONT = new Font("微软雅黑", Font.PLAIN, 14);
+	private static final Font TITLE_FONT = new Font("微软雅黑", Font.BOLD, 16);
 
 	public IndexFrame() {
 		super("首页");
-		this.setLayout(null);
+		this.setLayout(new BorderLayout());
 		this.setBounds(200, 70, 900, 530);
-		menuJxc = new JMenu("进销存管理");
-		itemSyt = new JMenuItem("收银台");
-		itemRk = new JMenuItem("商品入库");
-		itemLl = new JMenuItem("商品浏览");
-		itemTh = new JMenuItem("退货管理");
-		menuTj = new JMenu("数据统计分析");
-		itemXs = new JMenuItem("销售统计");
-		itemGz = new JMenuItem("工资核算");
-		menuWh = new JMenu("基础数据维护");
-		itemFl = new JMenuItem("商品分类管理");
-		itemYg = new JMenuItem("员工管理");
-		menuGl = new JMenu("系统管理");
-		itemPz = new JMenuItem("系统配置");
-		itemPwd=new JMenuItem("密码维护");
+
+		// 设置窗口背景色
+		this.getContentPane().setBackground(BACKGROUND_COLOR);
+
+		// 初始化菜单
+		initMenus();
+
 		init();
 		menuEvent();
-		this.setResizable(false);
-		this.setDefaultCloseOperation(this.EXIT_ON_CLOSE);// 关闭窗口时程序退出
+		this.setResizable(true);
+		this.setDefaultCloseOperation(this.EXIT_ON_CLOSE);
 		this.setVisible(true);
+
+		// 添加窗口大小改变监听器
+		this.addComponentListener(new ComponentAdapter() {
+			@Override
+			public void componentResized(ComponentEvent e) {
+				resizeComponents();
+			}
+		});
 	}
 
-	/**
-	 * 首页面初始化
-	 */
+	private void resizeComponents() {
+		int width = this.getWidth();
+		int height = this.getHeight();
+
+		// 调整主标签页面板大小
+		mainTabbedPane.setBounds(0, 40, width, height - 40);
+
+		// 调整所有标签页内容大小
+		for (JPanel panel : tabPanels.values()) {
+			panel.setSize(width, height - 40);
+			panel.revalidate();
+			panel.repaint();
+		}
+	}
+
+	private void initMenus() {
+		menuJxc = createMenu("进销存管理");
+		itemSyt = createMenuItem("收银台");
+		itemRk = createMenuItem("商品入库");
+		itemLl = createMenuItem("商品浏览");
+		itemTh = createMenuItem("退货管理");
+
+		menuTj = createMenu("数据统计分析");
+		itemXs = createMenuItem("销售统计");
+		itemGz = createMenuItem("工资核算");
+
+		menuWh = createMenu("基础数据维护");
+		itemFl = createMenuItem("商品分类管理");
+		itemYg = createMenuItem("员工管理");
+
+		menuGl = createMenu("系统管理");
+		itemPz = createMenuItem("系统配置");
+		itemPwd = createMenuItem("密码维护");
+	}
+
+	private JMenu createMenu(String text) {
+		JMenu menu = new JMenu(text);
+		menu.setFont(MENU_FONT);
+		menu.setBackground(MENU_BACKGROUND);
+		return menu;
+	}
+
+	private JMenuItem createMenuItem(String text) {
+		JMenuItem item = new JMenuItem(text);
+		item.setFont(MENU_FONT);
+		item.setBackground(MENU_BACKGROUND);
+		item.setBorder(new EmptyBorder(5, 10, 5, 10));
+
+		item.addMouseListener(new MouseAdapter() {
+			public void mouseEntered(MouseEvent e) {
+				item.setBackground(MENU_SELECTED);
+			}
+
+			public void mouseExited(MouseEvent e) {
+				item.setBackground(MENU_BACKGROUND);
+			}
+		});
+
+		return item;
+	}
+
 	private void init() {
 		JMenuBar menuBar = new JMenuBar();
+		menuBar.setBackground(MENU_BACKGROUND);
+		menuBar.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
 		checkRight(menuBar);
-
 		this.setJMenuBar(menuBar);
 
+		// 用户信息面板
+		JPanel userPanel = new JPanel();
+		userPanel.setLayout(null);
+		userPanel.setBounds(0, 0, 900, 40);
+		userPanel.setBackground(BACKGROUND_COLOR);
+
 		JLabel loginInfo = new JLabel();
-		loginInfo.setBounds(250, 20, 180, 30);
+		loginInfo.setBounds(250, 10, 180, 30);
 		UserInfo u = DataMapUtil.LOGIN_INFO.get(Constants.LOGIN_USER);
 		String name = u.getSaleManName() + "（" + u.getRole() + "），";
 		loginInfo.setText(name + "欢迎您！");
-		this.add(loginInfo);
-		JLabel loginTime = new JLabel();
-		loginTime.setBounds(430, 20, 180, 30);
-		loginTime.setText(DateUtil.getChinaDateTime(new Date()));
-		this.add(loginTime);
-		logOut = new JButton("退出");
-		logOut.setBounds(800, 20, 60, 30);
-		this.add(logOut);
+		loginInfo.setFont(TITLE_FONT);
+		userPanel.add(loginInfo);
 
-		JTabbedPane pan = new JTabbedPane(JTabbedPane.NORTH);// 外面套一层选项卡面板
-		pan.setBounds(0, 40, 900, 470);
-		JPanel imgPanel = new JPanel();
-		imgPanel.setBounds(0, 0, 900, 470);
+		JLabel loginTime = new JLabel();
+		loginTime.setBounds(430, 10, 180, 30);
+		loginTime.setText(DateUtil.getChinaDateTime(new Date()));
+		loginTime.setFont(MAIN_FONT);
+		userPanel.add(loginTime);
+
+		logOut = new JButton("退出");
+		logOut.setBounds(800, 10, 60, 30);
+		logOut.setFont(MAIN_FONT);
+		logOut.setBackground(PRIMARY_COLOR);
+		logOut.setForeground(Color.WHITE);
+		logOut.setFocusPainted(false);
+		logOut.setBorderPainted(false);
+		logOut.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+		logOut.addMouseListener(new MouseAdapter() {
+			public void mouseEntered(MouseEvent e) {
+				logOut.setBackground(PRIMARY_COLOR.darker());
+			}
+
+			public void mouseExited(MouseEvent e) {
+				logOut.setBackground(PRIMARY_COLOR);
+			}
+		});
+
+		userPanel.add(logOut);
+		this.add(userPanel, BorderLayout.NORTH);
+
+		// 主标签页面板
+		mainTabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		mainTabbedPane.setFont(TITLE_FONT);
+		mainTabbedPane.setBackground(BACKGROUND_COLOR);
+
+		// 添加首页标签
+		JPanel homePanel = new JPanel(new BorderLayout());
 		URL path = this.getClass().getResource("img/index.jpg");
 		Dictionary dic = dictionaryDao.getDictionaryByTypeAndName(Constants.DICTIONARY_CONFIG,
 				Constants.DICTIONARY_CONFIG_IMG);
 
 		JLabel labl = new JLabel(new ImageIcon(path));
-		labl.setBounds(0, 0, 900, 470);
-		imgPanel.add(labl);
-		imgPanel.setOpaque(false);
-		pan.add("首页", imgPanel);// 需要加选项卡的话，往pan里再加面板
-		this.add(pan, BorderLayout.CENTER);
+		labl.setHorizontalAlignment(JLabel.CENTER);
+		labl.setVerticalAlignment(JLabel.CENTER);
+		homePanel.add(labl, BorderLayout.CENTER);
 
+		mainTabbedPane.addTab("首页", homePanel);
+		tabPanels.put("首页", homePanel);
+
+		this.add(mainTabbedPane, BorderLayout.CENTER);
+	}
+
+	// 添加新标签页的方法
+	private void addNewTab(String title, Container container) {
+		// 检查是否已存在相同标题的标签页
+		for (int i = 0; i < mainTabbedPane.getTabCount(); i++) {
+			if (mainTabbedPane.getTitleAt(i).equals(title)) {
+				mainTabbedPane.setSelectedIndex(i);
+				return;
+			}
+		}
+
+		// 将Container转换为JPanel
+		JPanel panel = new JPanel(new BorderLayout());
+		panel.add(container, BorderLayout.CENTER);
+
+		// 添加新标签页
+		mainTabbedPane.addTab(title, panel);
+		tabPanels.put(title, panel);
+		mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount() - 1);
+	}
+
+	private void menuEvent() {
+		// "员工管理"菜单绑定事件
+		itemYg.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				UserFrame userFrm = new UserFrame();
+				userFrm.setVisible(false);
+				addNewTab("员工管理", userFrm.getContentPane());
+			}
+		});
+
+		// "收银台"菜单绑定事件
+		itemSyt.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				CrashFrame frm = new CrashFrame();
+				frm.setVisible(false);
+				addNewTab("收银台", frm.getContentPane());
+			}
+		});
+
+		// "商品入库"菜单绑定事件
+		itemRk.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				GoodsStorageFrame frm = new GoodsStorageFrame();
+				frm.setVisible(false);
+				addNewTab("商品入库", frm.getContentPane());
+			}
+		});
+
+		// "商品浏览"菜单绑定事件
+		itemLl.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				GoodsViewFrame frm = new GoodsViewFrame();
+				frm.setVisible(false);
+				addNewTab("商品浏览", frm.getContentPane());
+			}
+		});
+
+		// "商品退货"菜单绑定事件
+		itemTh.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				GoodsReturnFrame frm = new GoodsReturnFrame();
+				frm.setVisible(false);
+				addNewTab("退货管理", frm.getContentPane());
+			}
+		});
+
+		// "销售统计"菜单绑定事件
+		itemXs.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				SaleStatisticFrame frm = new SaleStatisticFrame();
+				frm.setVisible(false);
+				addNewTab("销售统计", frm.getContentPane());
+			}
+		});
+
+		// "工资核算"菜单绑定事件
+		itemGz.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				PayStatisticFrame frm = new PayStatisticFrame();
+				frm.setVisible(false);
+				addNewTab("工资核算", frm.getContentPane());
+			}
+		});
+
+		// "商品分类"菜单绑定事件
+		itemFl.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				GoodsTypeFrame frm = new GoodsTypeFrame();
+				frm.setVisible(false);
+				addNewTab("商品分类", frm.getContentPane());
+			}
+		});
+
+		// "系统配置"菜单绑定事件
+		itemPz.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				ConfigFrame frm = new ConfigFrame();
+				frm.setVisible(false);
+				addNewTab("系统配置", frm.getContentPane());
+			}
+		});
+
+		// "密码维护"菜单绑定事件
+		itemPwd.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				PasswordFrame frm = new PasswordFrame();
+				frm.setVisible(false);
+				addNewTab("密码维护", frm.getContentPane());
+			}
+		});
+
+		logOut.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				indexFrm.dispose();
+				DataMapUtil.LOGIN_INFO.put(Constants.LOGIN_USER, null);
+				LoginFrame login = new LoginFrame();
+			}
+		});
 	}
 
 	/**
@@ -111,7 +364,6 @@ public class IndexFrame extends ParentFrame {
 			menuJxc.add(itemLl);
 			menuBar.add(menuJxc);
 			menuWh.add(itemFl);
-			menuBar.add(menuJxc);
 			menuBar.add(menuWh);
 			menuGl.add(itemPwd);
 			menuBar.add(menuGl);
@@ -133,118 +385,11 @@ public class IndexFrame extends ParentFrame {
 			menuGl.add(itemPz);
 			menuGl.add(itemPwd);
 			menuBar.add(menuGl);
-		} else {//收银员
+		} else {// 收银员
 			menuJxc.add(itemSyt);
 			menuBar.add(menuJxc);
 			menuGl.add(itemPwd);
 			menuBar.add(menuGl);
 		}
-
-	}
-
-	/**
-	 * 给菜单绑定事件
-	 */
-	private void menuEvent() {
-		// “员工管理”菜单绑定事件
-		itemYg.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				UserFrame userFrm = new UserFrame();
-			}
-		});
-
-		// “收银台”菜单绑定事件
-		itemSyt.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				CrashFrame frm = new CrashFrame();
-			}
-		});
-
-		// “商品入库”菜单绑定事件
-		itemRk.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				GoodsStorageFrame frm = new GoodsStorageFrame();
-			}
-		});
-
-		// “商品浏览”菜单绑定事件
-		itemLl.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				GoodsViewFrame frm = new GoodsViewFrame();
-			}
-		});
-
-		// “商品退货”菜单绑定事件
-		itemTh.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				GoodsReturnFrame frm = new GoodsReturnFrame();
-			}
-		});
-
-		// “销售统计”菜单绑定事件
-		itemXs.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				SaleStatisticFrame frm = new SaleStatisticFrame();
-			}
-		});
-
-		// “工资核算”菜单绑定事件
-		itemGz.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				PayStatisticFrame frm = new PayStatisticFrame();
-			}
-		});
-
-		// “商品分类”菜单绑定事件
-		itemFl.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				GoodsTypeFrame frm = new GoodsTypeFrame();
-			}
-		});
-
-		// “系统配置”菜单绑定事件
-		itemPz.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				ConfigFrame frm = new ConfigFrame();
-			}
-		});
-
-		// “密码维护”菜单绑定事件
-		itemPwd.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				PasswordFrame frm = new PasswordFrame();
-			}
-		});
-
-		logOut.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				indexFrm.dispose();
-				DataMapUtil.LOGIN_INFO.put(Constants.LOGIN_USER, null);
-				LoginFrame login = new LoginFrame();
-			}
-		});
 	}
 }
