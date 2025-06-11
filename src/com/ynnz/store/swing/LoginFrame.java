@@ -15,7 +15,6 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.net.URL;
 import java.util.Properties;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -59,120 +58,141 @@ public class LoginFrame extends ParentFrame {
 		this.setLayout(null);
 
 		JPanel imgPanel = new JPanel();
-		URL path = this.getClass().getResource("img/login.png");
-		System.out.println(path);
-		ImageIcon bgIcon = new ImageIcon(path);
-		int imgWidth = bgIcon.getIconWidth();
-		int imgHeight = bgIcon.getIconHeight();
-		this.setBounds(300, 150, imgWidth, imgHeight); // 根据图片大小设置窗口
-		imgPanel.setBounds(0, 0, imgWidth, imgHeight);
-		JLabel labl = new JLabel(bgIcon);
-		labl.setBounds(0, 0, imgWidth, imgHeight);
-		imgPanel.add(labl);
+		try {
+			String imagePath = System.getProperty("user.dir") + "/src/com/ynnz/store/swing/img/login.png";
+			File imageFile = new File(imagePath);
+			if (imageFile.exists()) {
+				ImageIcon bgIcon = new ImageIcon(imagePath);
+				int imgWidth = bgIcon.getIconWidth();
+				int imgHeight = bgIcon.getIconHeight();
+				this.setBounds(300, 150, imgWidth, imgHeight); // 根据图片大小设置窗口
+				imgPanel.setBounds(0, 0, imgWidth, imgHeight);
+				JLabel labl = new JLabel(bgIcon);
+				labl.setBounds(0, 0, imgWidth, imgHeight);
+				imgPanel.add(labl);
 
-		int inputWidth = 240;
-		int inputHeight = 38;
-		int inputX = (imgWidth - inputWidth) / 2;
-		int nameY = imgHeight / 3;
-		int pwdY = nameY + inputHeight + 18;
-		int btnWidth = 120;
-		int btnHeight = 40;
-		int btnX = (imgWidth - btnWidth) / 2;
-		int btnY = pwdY + inputHeight + 28;
+				int inputWidth = 240;
+				int inputHeight = 38;
+				int inputX = (imgWidth - inputWidth) / 2;
+				int nameY = imgHeight / 3;
+				int pwdY = nameY + inputHeight + 18;
+				int btnWidth = 120;
+				int btnHeight = 40;
+				int btnX = (imgWidth - btnWidth) / 2;
+				int btnY = pwdY + inputHeight + 28;
 
-		// 用户名输入框，带提示词
-		nameTxt = new JTextField("请输入手机号");
-		nameTxt.setBounds(inputX, nameY, inputWidth, inputHeight);
-		nameTxt.setForeground(Color.GRAY);
-		nameTxt.setFont(new Font("微软雅黑", Font.PLAIN, 18));
-		nameTxt.setBackground(Color.WHITE);
-		nameTxt.setBorder(new LineBorder(new Color(200, 200, 200), 2, true));
-		nameTxt.setCaretColor(Color.BLACK);
-		nameTxt.setOpaque(true);
-		nameTxt.addFocusListener(new FocusAdapter() {
-			@Override
-			public void focusGained(FocusEvent e) {
-				if (nameTxt.getText().equals("请输入手机号")) {
-					nameTxt.setText("");
-					nameTxt.setForeground(Color.BLACK);
-				}
+				// 用户名输入框，带提示词
+				nameTxt = new JTextField("请输入手机号");
+				nameTxt.setBounds(inputX, nameY, inputWidth, inputHeight);
+				nameTxt.setForeground(Color.GRAY);
+				nameTxt.setFont(new Font("微软雅黑", Font.PLAIN, 18));
+				nameTxt.setBackground(Color.WHITE);
+				nameTxt.setBorder(new LineBorder(new Color(200, 200, 200), 2, true));
+				nameTxt.setCaretColor(Color.BLACK);
+				nameTxt.setOpaque(true);
+				nameTxt.addFocusListener(new FocusAdapter() {
+					@Override
+					public void focusGained(FocusEvent e) {
+						if (nameTxt.getText().equals("请输入手机号")) {
+							nameTxt.setText("");
+							nameTxt.setForeground(Color.BLACK);
+						}
+					}
+
+					@Override
+					public void focusLost(FocusEvent e) {
+						if (nameTxt.getText().isEmpty()) {
+							nameTxt.setForeground(Color.GRAY);
+							nameTxt.setText("请输入手机号");
+						}
+					}
+				});
+
+				// 密码输入框，带提示词
+				pwdTxt = new JPasswordField("请输入密码");
+				pwdTxt.setBounds(inputX, pwdY, inputWidth, inputHeight);
+				pwdTxt.setForeground(Color.GRAY);
+				pwdTxt.setFont(new Font("微软雅黑", Font.PLAIN, 18));
+				pwdTxt.setBackground(Color.WHITE);
+				pwdTxt.setBorder(new LineBorder(new Color(200, 200, 200), 2, true));
+				pwdTxt.setCaretColor(Color.BLACK);
+				pwdTxt.setOpaque(true);
+				pwdTxt.setEchoChar((char) 0); // 显示明文提示
+				pwdTxt.addFocusListener(new FocusAdapter() {
+					@Override
+					public void focusGained(FocusEvent e) {
+						String pwd = new String(pwdTxt.getPassword());
+						if (pwd.equals("请输入密码")) {
+							pwdTxt.setText("");
+							pwdTxt.setForeground(Color.BLACK);
+							pwdTxt.setEchoChar('●'); // 输入时显示为密码
+						}
+					}
+
+					@Override
+					public void focusLost(FocusEvent e) {
+						String pwd = new String(pwdTxt.getPassword());
+						if (pwd.isEmpty()) {
+							pwdTxt.setForeground(Color.GRAY);
+							pwdTxt.setText("请输入密码");
+							pwdTxt.setEchoChar((char) 0); // 显示明文提示
+						}
+					}
+				});
+
+				// 记住密码选项
+				rememberPasswordCheck = new JCheckBox("记住密码");
+				rememberPasswordCheck.setBounds(inputX, pwdY + inputHeight + 5, 100, 20);
+				rememberPasswordCheck.setFont(new Font("微软雅黑", Font.PLAIN, 14));
+				rememberPasswordCheck.setForeground(Color.BLACK);
+				rememberPasswordCheck.setOpaque(false);
+
+				labl.add(nameTxt);
+				labl.add(pwdTxt);
+				labl.add(rememberPasswordCheck);
+
+				// 登录按钮美化
+				btn = new JButton("登录");
+				btn.setBounds(btnX, btnY, btnWidth, btnHeight);
+				btn.setFont(new Font("微软雅黑", Font.BOLD, 20));
+				btn.setForeground(Color.WHITE);
+				btn.setBackground(new Color(33, 150, 243)); // 蓝色主色
+				btn.setBorder(new LineBorder(new Color(33, 150, 243), 2, true));
+				btn.setFocusPainted(false);
+				btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+				btn.addMouseListener(new MouseAdapter() {
+					@Override
+					public void mouseEntered(MouseEvent e) {
+						btn.setBackground(new Color(30, 136, 229)); // 悬停更深蓝
+					}
+
+					@Override
+					public void mouseExited(MouseEvent e) {
+						btn.setBackground(new Color(33, 150, 243));
+					}
+				});
+				labl.add(btn);
+				imgPanel.setOpaque(false);
+				this.add(imgPanel);
+			} else {
+				System.out.println("登录背景图片不存在: " + imagePath);
+				// 设置默认窗口大小
+				this.setBounds(300, 150, 400, 300);
+				imgPanel.setBounds(0, 0, 400, 300);
+				JLabel labl = new JLabel("登录");
+				labl.setBounds(0, 0, 400, 300);
+				imgPanel.add(labl);
 			}
-
-			@Override
-			public void focusLost(FocusEvent e) {
-				if (nameTxt.getText().isEmpty()) {
-					nameTxt.setForeground(Color.GRAY);
-					nameTxt.setText("请输入手机号");
-				}
-			}
-		});
-
-		// 密码输入框，带提示词
-		pwdTxt = new JPasswordField("请输入密码");
-		pwdTxt.setBounds(inputX, pwdY, inputWidth, inputHeight);
-		pwdTxt.setForeground(Color.GRAY);
-		pwdTxt.setFont(new Font("微软雅黑", Font.PLAIN, 18));
-		pwdTxt.setBackground(Color.WHITE);
-		pwdTxt.setBorder(new LineBorder(new Color(200, 200, 200), 2, true));
-		pwdTxt.setCaretColor(Color.BLACK);
-		pwdTxt.setOpaque(true);
-		pwdTxt.setEchoChar((char) 0); // 显示明文提示
-		pwdTxt.addFocusListener(new FocusAdapter() {
-			@Override
-			public void focusGained(FocusEvent e) {
-				String pwd = new String(pwdTxt.getPassword());
-				if (pwd.equals("请输入密码")) {
-					pwdTxt.setText("");
-					pwdTxt.setForeground(Color.BLACK);
-					pwdTxt.setEchoChar('●'); // 输入时显示为密码
-				}
-			}
-
-			@Override
-			public void focusLost(FocusEvent e) {
-				String pwd = new String(pwdTxt.getPassword());
-				if (pwd.isEmpty()) {
-					pwdTxt.setForeground(Color.GRAY);
-					pwdTxt.setText("请输入密码");
-					pwdTxt.setEchoChar((char) 0); // 显示明文提示
-				}
-			}
-		});
-
-		// 记住密码选项
-		rememberPasswordCheck = new JCheckBox("记住密码");
-		rememberPasswordCheck.setBounds(inputX, pwdY + inputHeight + 5, 100, 20);
-		rememberPasswordCheck.setFont(new Font("微软雅黑", Font.PLAIN, 14));
-		rememberPasswordCheck.setForeground(Color.BLACK);
-		rememberPasswordCheck.setOpaque(false);
-
-		labl.add(nameTxt);
-		labl.add(pwdTxt);
-		labl.add(rememberPasswordCheck);
-
-		// 登录按钮美化
-		btn = new JButton("登录");
-		btn.setBounds(btnX, btnY, btnWidth, btnHeight);
-		btn.setFont(new Font("微软雅黑", Font.BOLD, 20));
-		btn.setForeground(Color.WHITE);
-		btn.setBackground(new Color(33, 150, 243)); // 蓝色主色
-		btn.setBorder(new LineBorder(new Color(33, 150, 243), 2, true));
-		btn.setFocusPainted(false);
-		btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
-		btn.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				btn.setBackground(new Color(30, 136, 229)); // 悬停更深蓝
-			}
-
-			@Override
-			public void mouseExited(MouseEvent e) {
-				btn.setBackground(new Color(33, 150, 243));
-			}
-		});
-		labl.add(btn);
-		imgPanel.setOpaque(false);
-		this.add(imgPanel);
+		} catch (Exception e) {
+			System.out.println("加载登录背景图片失败: " + e.getMessage());
+			e.printStackTrace();
+			// 设置默认窗口大小
+			this.setBounds(300, 150, 400, 300);
+			imgPanel.setBounds(0, 0, 400, 300);
+			JLabel labl = new JLabel("登录");
+			labl.setBounds(0, 0, 400, 300);
+			imgPanel.add(labl);
+		}
 	}
 
 	/**

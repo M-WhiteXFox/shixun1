@@ -36,6 +36,11 @@ import javax.swing.JTabbedPane;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JScrollPane;
 import java.awt.Component;
+import java.awt.Image;
+import java.awt.GridBagLayout;
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
+import java.io.File;
 
 public class IndexFrame extends ParentFrame {
 
@@ -216,14 +221,71 @@ public class IndexFrame extends ParentFrame {
 
 		// 添加首页标签
 		JPanel homePanel = new JPanel(new BorderLayout());
-		URL path = this.getClass().getResource("img/index.jpg");
-		Dictionary dic = dictionaryDao.getDictionaryByTypeAndName(Constants.DICTIONARY_CONFIG,
-				Constants.DICTIONARY_CONFIG_IMG);
+		homePanel.setBackground(new Color(0xD0D0D0)); // 设置背景色为#DD0D0
 
-		JLabel labl = new JLabel(new ImageIcon(path));
-		labl.setHorizontalAlignment(JLabel.CENTER);
-		labl.setVerticalAlignment(JLabel.CENTER);
-		homePanel.add(labl, BorderLayout.CENTER);
+		// 创建欢迎信息面板
+		JPanel welcomePanel = new JPanel(new GridBagLayout());
+		welcomePanel.setBackground(new Color(0xD0D0D0)); // 设置欢迎面板背景色
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.gridwidth = GridBagConstraints.REMAINDER;
+		gbc.anchor = GridBagConstraints.CENTER;
+		gbc.insets = new Insets(20, 0, 20, 0); // 添加上下边距
+
+		// 获取用户信息
+		UserInfo user = DataMapUtil.LOGIN_INFO.get(Constants.LOGIN_USER);
+		String welcomeText = user.getSaleManName() + "（" + user.getRole() + "），欢迎您！";
+
+		// 创建欢迎标签
+		JLabel welcomeLabel = new JLabel(welcomeText);
+		welcomeLabel.setFont(new Font("微软雅黑", Font.BOLD, 24));
+		welcomeLabel.setForeground(PRIMARY_COLOR);
+		welcomePanel.add(welcomeLabel, gbc);
+
+		// 添加当前时间
+		JLabel timeLabel = new JLabel(DateUtil.getChinaDateTime(new Date()));
+		timeLabel.setFont(MAIN_FONT);
+		timeLabel.setForeground(Color.GRAY);
+		welcomePanel.add(timeLabel, gbc);
+
+		// 添加欢迎面板到顶部
+		homePanel.add(welcomePanel, BorderLayout.NORTH);
+
+		// 添加图片
+		try {
+			// 使用文件路径加载图片
+			String imagePath = System.getProperty("user.dir") + "/src/com/ynnz/store/swing/img/index.jpg";
+			File imageFile = new File(imagePath);
+			if (imageFile.exists()) {
+				ImageIcon imageIcon = new ImageIcon(imagePath);
+				// 获取窗口宽度
+				int windowWidth = this.getWidth();
+				if (windowWidth <= 0) {
+					windowWidth = 800; // 设置默认宽度
+				}
+				// 计算等比例缩放后的高度
+				double ratio = (double) imageIcon.getIconHeight() / imageIcon.getIconWidth();
+				int scaledHeight = (int) (windowWidth * ratio);
+
+				// 调整图片大小以适应窗口宽度
+				Image image = imageIcon.getImage().getScaledInstance(windowWidth, scaledHeight, Image.SCALE_SMOOTH);
+				JLabel imageLabel = new JLabel(new ImageIcon(image));
+				imageLabel.setHorizontalAlignment(JLabel.CENTER);
+				imageLabel.setVerticalAlignment(JLabel.CENTER);
+				homePanel.add(imageLabel, BorderLayout.CENTER);
+			} else {
+				System.out.println("图片文件不存在: " + imagePath);
+				JLabel errorLabel = new JLabel("图片加载失败");
+				errorLabel.setHorizontalAlignment(JLabel.CENTER);
+				homePanel.add(errorLabel, BorderLayout.CENTER);
+			}
+		} catch (Exception e) {
+			System.out.println("图片加载异常: " + e.getMessage());
+			e.printStackTrace();
+			JLabel errorLabel = new JLabel("图片加载失败: " + e.getMessage());
+			errorLabel.setHorizontalAlignment(JLabel.CENTER);
+			homePanel.add(errorLabel, BorderLayout.CENTER);
+		}
+
 		mainTabbedPane.addTab("首页", homePanel);
 		tabPanels.put("首页", homePanel);
 
