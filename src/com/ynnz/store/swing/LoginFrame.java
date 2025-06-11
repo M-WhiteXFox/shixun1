@@ -12,9 +12,14 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.net.URL;
+import java.util.Properties;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -34,6 +39,8 @@ public class LoginFrame extends ParentFrame {
 	private JPasswordField pwdTxt;
 	private static JButton btn;
 	private final LoginFrame login = this;
+	private JCheckBox rememberPasswordCheck;
+	private static final String CONFIG_FILE = "login.properties";
 
 	public LoginFrame() {
 		super("登录");
@@ -42,6 +49,7 @@ public class LoginFrame extends ParentFrame {
 		this.setResizable(false);
 		this.setDefaultCloseOperation(this.EXIT_ON_CLOSE);// 关闭窗口时程序退出
 		this.setVisible(true);
+		loadSavedLoginInfo();
 	}
 
 	/**
@@ -131,8 +139,16 @@ public class LoginFrame extends ParentFrame {
 			}
 		});
 
+		// 记住密码选项
+		rememberPasswordCheck = new JCheckBox("记住密码");
+		rememberPasswordCheck.setBounds(inputX, pwdY + inputHeight + 5, 100, 20);
+		rememberPasswordCheck.setFont(new Font("微软雅黑", Font.PLAIN, 14));
+		rememberPasswordCheck.setForeground(Color.BLACK);
+		rememberPasswordCheck.setOpaque(false);
+
 		labl.add(nameTxt);
 		labl.add(pwdTxt);
+		labl.add(rememberPasswordCheck);
 
 		// 登录按钮美化
 		btn = new JButton("登录");
@@ -197,5 +213,64 @@ public class LoginFrame extends ParentFrame {
 		DataMapUtil.LOGIN_INFO.put(Constants.LOGIN_USER, u);
 		login.dispose();
 		new IndexFrame();
+		if (rememberPasswordCheck.isSelected()) {
+			saveLoginInfo(name, pwd);
+		} else {
+			clearSavedLoginInfo();
+		}
+	}
+
+	// 保存登录信息
+	private void saveLoginInfo(String username, String password) {
+		try {
+			Properties props = new Properties();
+			props.setProperty("username", username);
+			props.setProperty("password", password);
+			props.setProperty("remember", "true");
+
+			File configFile = new File(CONFIG_FILE);
+			FileOutputStream fos = new FileOutputStream(configFile);
+			props.store(fos, "Login Information");
+			fos.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	// 清除保存的登录信息
+	private void clearSavedLoginInfo() {
+		try {
+			File configFile = new File(CONFIG_FILE);
+			if (configFile.exists()) {
+				configFile.delete();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	// 加载保存的登录信息
+	private void loadSavedLoginInfo() {
+		try {
+			File configFile = new File(CONFIG_FILE);
+			if (configFile.exists()) {
+				Properties props = new Properties();
+				FileInputStream fis = new FileInputStream(configFile);
+				props.load(fis);
+				fis.close();
+
+				String username = props.getProperty("username");
+				String password = props.getProperty("password");
+				String remember = props.getProperty("remember");
+
+				if ("true".equals(remember)) {
+					nameTxt.setText(username);
+					pwdTxt.setText(password);
+					rememberPasswordCheck.setSelected(true);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }

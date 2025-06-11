@@ -181,7 +181,7 @@ public class GoodsStorageRecordFrame extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 int selectedRow = table.getSelectedRow();
                 if (selectedRow != -1) {
-                    deleteRecord(currentRecords.get(selectedRow));
+                    showDeleteDialog(currentRecords.get(selectedRow));
                 }
             }
         });
@@ -464,23 +464,43 @@ public class GoodsStorageRecordFrame extends JFrame {
         dialog.setVisible(true);
     }
 
-    private void deleteRecord(StorageRecord record) {
-        int confirm = JOptionPane.showConfirmDialog(this, "确定要删除该入库记录吗？", "确认删除",
+    private void showDeleteDialog(StorageRecord record) {
+        int confirm = JOptionPane.showConfirmDialog(this, "确定要删除这条入库记录吗？", "确认删除",
                 JOptionPane.YES_NO_OPTION);
         if (confirm == JOptionPane.YES_OPTION) {
-            // 获取商品信息
-            Goods goods = goodsDao.getGoodsByBarCode(record.getGoodsName());
-            if (goods != null) {
-                // 更新商品库存
-                goodsDao.updateStoreNum(goods.getGoodsId(), goods.getStockNum() - record.getQuantity());
-            }
+            try {
+                // 获取商品信息
+                Goods goods = goodsDao.getGoodsById(record.getGoodsId());
+                if (goods == null) {
+                    JOptionPane.showMessageDialog(this, "商品不存在！");
+                    return;
+                }
 
-            // 删除入库记录
-            if (storageRecordDao.deleteStorageRecord(record.getRecordCode())) {
-                JOptionPane.showMessageDialog(this, "删除成功！");
-                loadData();
-            } else {
-                JOptionPane.showMessageDialog(this, "删除失败！");
+                // 更新商品库存
+                int newStock = goods.getStockNum() - record.getQuantity();
+                if (newStock < 0) {
+                    JOptionPane.showMessageDialog(this, "库存不足，无法删除！");
+                    return;
+                }
+
+                // 更新库存
+                if (!goodsDao.updateStoreNum(goods.getGoodsId(), newStock)) {
+                    JOptionPane.showMessageDialog(this, "更新商品库存失败！");
+                    return;
+                }
+
+                // 删除入库记录
+                if (storageRecordDao.deleteStorageRecord(record.getRecordCode())) {
+                    JOptionPane.showMessageDialog(this, "删除成功！");
+                    loadData(); // 重新加载数据
+                } else {
+                    // 如果删除失败，回滚库存
+                    goodsDao.updateStoreNum(goods.getGoodsId(), goods.getStockNum());
+                    JOptionPane.showMessageDialog(this, "删除失败！");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(this, "操作失败：" + e.getMessage());
             }
         }
     }
@@ -545,7 +565,7 @@ public class GoodsStorageRecordFrame extends JFrame {
                     showEditDialog(currentRecords.get(row));
                 } else {
                     // 删除
-                    deleteRecord(currentRecords.get(row));
+                    showDeleteDialog(currentRecords.get(row));
                 }
             }
             isPushed = false;
