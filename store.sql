@@ -1,13 +1,13 @@
--- MySQL dump 10.13  Distrib 8.0.36, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 9.3.0, for Win64 (x86_64)
 --
--- Host: localhost    Database: store
+-- Host: 127.0.0.1    Database: sjpdemo
 -- ------------------------------------------------------
--- Server version	8.4.0
+-- Server version	9.3.0
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!50503 SET NAMES utf8 */;
+/*!50503 SET NAMES utf8mb4 */;
 /*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
 /*!40103 SET TIME_ZONE='+00:00' */;
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
@@ -70,7 +70,7 @@ CREATE TABLE `t_goods` (
 
 LOCK TABLES `t_goods` WRITE;
 /*!40000 ALTER TABLE `t_goods` DISABLE KEYS */;
-INSERT INTO `t_goods` VALUES (1,'4321',5,'羽毛球拍',34.50,34.50,0.80,50,'2020-08-21 09:29:22'),(2,'1234',8,'运动裤',56.00,89.00,0.90,47,'2020-08-24 10:01:19'),(3,'2345',5,'乒乓球拍',13.00,32.00,0.95,157,'2020-08-28 10:14:18');
+INSERT INTO `t_goods` VALUES (1,'4321',5,'羽毛球拍',34.50,34.50,0.80,49,'2020-08-21 09:29:22'),(2,'1234',8,'运动裤',56.00,89.00,0.90,84,'2025-06-10 15:57:44'),(3,'2345',5,'乒乓球拍',13.00,32.00,0.95,157,'2020-08-28 10:14:18');
 /*!40000 ALTER TABLE `t_goods` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -95,7 +95,7 @@ CREATE TABLE `t_goodstype` (
 
 LOCK TABLES `t_goodstype` WRITE;
 /*!40000 ALTER TABLE `t_goodstype` DISABLE KEYS */;
-INSERT INTO `t_goodstype` VALUES (1,'运动装备',0),(2,'衣服',0),(3,'裤子',0),(4,'重型装备',1),(5,'轻型设备',1),(6,'男装',2),(7,'女装',2),(8,'裤裙',3),(9,'鞋子',0);
+INSERT INTO `t_goodstype` VALUES (1,'运动装备',0),(2,'衣服',1),(3,'裤子',0),(4,'重型装备',1),(5,'轻型设备',1),(6,'男装',2),(7,'女装',2),(8,'裤裙',3),(9,'鞋子',0);
 /*!40000 ALTER TABLE `t_goodstype` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -114,7 +114,7 @@ CREATE TABLE `t_sales` (
   `SalesmanID` int NOT NULL COMMENT '经手的导购员ID，外键',
   `CashierID` int NOT NULL COMMENT '经手的收银员ID，外键',
   PRIMARY KEY (`SalesID`)
-) ENGINE=InnoDB AUTO_INCREMENT=45 DEFAULT CHARSET=gbk;
+) ENGINE=InnoDB AUTO_INCREMENT=49 DEFAULT CHARSET=gbk;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -123,7 +123,7 @@ CREATE TABLE `t_sales` (
 
 LOCK TABLES `t_sales` WRITE;
 /*!40000 ALTER TABLE `t_sales` DISABLE KEYS */;
-INSERT INTO `t_sales` VALUES (34,'20200826105549','2020-08-25 10:56:06',944.38,25,24),(35,'20200826135240','2020-08-14 13:52:58',403.19,25,24),(36,'20200826140810','2020-08-26 14:08:24',375.59,28,24),(37,'20200827145732','2020-08-27 14:57:58',160.19,25,24),(38,'20200827150343','2020-08-27 15:04:19',82.80,25,24),(39,'20200827150444','2020-08-27 15:05:07',483.29,25,24),(40,'20200827150545','2020-08-27 15:06:09',240.28,25,24),(41,'20200828090102','2020-08-28 09:01:41',400.50,28,29),(42,'20200828100028','2020-08-28 10:00:59',430.79,28,30),(43,'20200828100148','2020-08-28 10:02:31',240.28,28,24),(44,'20200831134604','2020-08-31 13:46:30',485.99,28,24);
+INSERT INTO `t_sales` VALUES (34,'20200826105549','2020-08-25 10:56:06',944.38,25,24),(35,'20200826135240','2020-08-14 13:52:58',403.19,25,24),(36,'20200826140810','2020-08-26 14:08:24',375.59,28,24),(37,'20200827145732','2020-08-27 14:57:58',160.19,25,24),(38,'20200827150343','2020-08-27 15:04:19',82.80,25,24),(39,'20200827150444','2020-08-27 15:05:07',483.29,25,24),(40,'20200827150545','2020-08-27 15:06:09',240.28,25,24),(41,'20200828090102','2020-08-28 09:01:41',400.50,28,29),(42,'20200828100028','2020-08-28 10:00:59',430.79,28,30),(43,'20200828100148','2020-08-28 10:02:31',240.28,28,24),(44,'20200831134604','2020-08-31 13:46:30',485.99,28,24),(45,'20250609083002','2025-06-09 08:30:17',80.08,25,24),(46,'20250609085933','2025-06-09 08:59:48',80.08,25,24),(47,'20250609090933','2025-06-09 09:09:44',110.40,25,24),(48,'20250610102401','2025-06-10 10:24:19',80.08,25,24);
 /*!40000 ALTER TABLE `t_sales` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -145,7 +145,7 @@ CREATE TABLE `t_salesdetail` (
   KEY `GoodsID` (`GoodsID`),
   CONSTRAINT `t_salesdetail_ibfk_1` FOREIGN KEY (`SalesID`) REFERENCES `t_sales` (`SalesID`),
   CONSTRAINT `t_salesdetail_ibfk_2` FOREIGN KEY (`GoodsID`) REFERENCES `t_goods` (`GoodsID`)
-) ENGINE=InnoDB AUTO_INCREMENT=45 DEFAULT CHARSET=gbk;
+) ENGINE=InnoDB AUTO_INCREMENT=49 DEFAULT CHARSET=gbk;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -154,8 +154,44 @@ CREATE TABLE `t_salesdetail` (
 
 LOCK TABLES `t_salesdetail` WRITE;
 /*!40000 ALTER TABLE `t_salesdetail` DISABLE KEYS */;
-INSERT INTO `t_salesdetail` VALUES (28,34,2,8,640.79),(30,35,2,4,320.39),(31,35,1,3,82.80),(32,36,2,4,320.39),(33,36,1,2,55.20),(34,37,2,2,160.19),(35,38,1,3,82.80),(36,39,2,5,400.50),(37,39,1,3,82.80),(38,40,2,3,240.29),(39,41,2,5,400.50),(40,42,1,4,110.40),(41,42,2,4,320.39),(42,43,2,3,240.29),(43,44,2,4,320.39);
+INSERT INTO `t_salesdetail` VALUES (28,34,2,8,640.79),(32,36,2,4,320.39),(33,36,1,2,55.20),(34,37,2,2,160.19),(35,38,1,3,82.80),(36,39,2,5,400.50),(37,39,1,3,82.80),(38,40,2,3,240.29),(39,41,2,5,400.50),(40,42,1,4,110.40),(41,42,2,4,320.39),(42,43,2,3,240.29),(43,44,2,4,320.39),(45,45,2,1,80.09),(46,46,2,1,80.09),(47,47,1,4,110.40),(48,48,2,1,80.09);
 /*!40000 ALTER TABLE `t_salesdetail` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `t_storage_record`
+--
+
+DROP TABLE IF EXISTS `t_storage_record`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `t_storage_record` (
+  `RecordID` int NOT NULL AUTO_INCREMENT,
+  `RecordCode` varchar(20) NOT NULL COMMENT '入库单号',
+  `GoodsID` int NOT NULL COMMENT '商品ID',
+  `GoodsName` varchar(50) NOT NULL COMMENT '商品名称',
+  `Quantity` int NOT NULL COMMENT '入库数量',
+  `StorePrice` decimal(10,2) NOT NULL COMMENT '进货价格',
+  `TotalAmount` decimal(10,2) NOT NULL COMMENT '总金额',
+  `StorageDate` datetime NOT NULL COMMENT '入库时间',
+  `OperatorID` int NOT NULL COMMENT '操作员ID',
+  `OperatorName` varchar(20) NOT NULL COMMENT '操作员姓名',
+  PRIMARY KEY (`RecordID`),
+  KEY `GoodsID` (`GoodsID`),
+  KEY `OperatorID` (`OperatorID`),
+  CONSTRAINT `t_storage_record_ibfk_1` FOREIGN KEY (`GoodsID`) REFERENCES `t_goods` (`GoodsID`),
+  CONSTRAINT `t_storage_record_ibfk_2` FOREIGN KEY (`OperatorID`) REFERENCES `t_userinfo` (`SalesmanID`)
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='入库单表';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `t_storage_record`
+--
+
+LOCK TABLES `t_storage_record` WRITE;
+/*!40000 ALTER TABLE `t_storage_record` DISABLE KEYS */;
+INSERT INTO `t_storage_record` VALUES (8,'RK20250610851237',2,'运动裤',10,56.00,560.00,'2025-06-10 14:59:56',24,'沃寅博'),(11,'RK20250611081607',2,'运动裤',10,56.00,560.00,'2025-06-11 08:16:12',24,'沃寅博');
+/*!40000 ALTER TABLE `t_storage_record` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -184,7 +220,7 @@ CREATE TABLE `t_userinfo` (
 
 LOCK TABLES `t_userinfo` WRITE;
 /*!40000 ALTER TABLE `t_userinfo` DISABLE KEYS */;
-INSERT INTO `t_userinfo` VALUES (24,'王一','15925101700','123456','女',3456,0.40,'店长'),(25,'李四中','13200006543','123456','女',2256,0.30,'导购员'),(28,'王二小','13289076543','123456','女',3422,0.40,'导购员'),(30,'张一','15925101900','123456','男',3000,0.10,'收银员'),(31,'里四','15925101800','123456','男',2300,0.20,'收银员');
+INSERT INTO `t_userinfo` VALUES (24,'沃寅博','17851828328','123654','女',3456,0.40,'店长'),(25,'李四中','13200006543','123456','女',2256,0.30,'导购员'),(28,'王二小','13289076543','123456','女',3422,0.40,'导购员'),(30,'张一','15925101900','123456','男',3000,0.10,'收银员'),(31,'里四','15925101800','123456','男',2300,0.20,'收银员');
 /*!40000 ALTER TABLE `t_userinfo` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -197,4 +233,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-06-05 12:14:37
+-- Dump completed on 2025-06-11  8:47:46
